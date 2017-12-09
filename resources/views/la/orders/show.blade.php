@@ -107,7 +107,7 @@
 						<h4>General Info</h4>
 					</div>
 					<div class="panel-body">
-						@la_display($module, 'kode_order')
+						<!-- @la_display($module, 'kode_order')-->
 						@la_display($module, 'tgl_order')
 						@la_display($module, 'nama_pembeli')
 						@la_display($module, 'alamat_pembeli')
