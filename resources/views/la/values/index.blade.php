@@ -9,7 +9,7 @@
 @section("headerElems")
 @la_access("Values", "create")
 	<button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Value</button>
-	<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#Ramal">Ramalkan</button>
+	<button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#Ramal">Ramalkan</button>
 @endla_access
 @endsection
 
@@ -68,6 +68,7 @@
 					--}}
 				</div>
 			</div>
+
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				{!! Form::submit( 'Submit', ['class'=>'btn btn-success']) !!}
@@ -76,7 +77,9 @@
 		</div>
 	</div>
 </div>
+{{--tambahanbku--}}
 @endla_access
+
 @la_access("Values", "create")
 <div class="modal fade" id="Ramal" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
@@ -111,6 +114,9 @@
 								<label for="id_barang">Tahun :</label>
 								<select class="form-control" data-placeholder="Enter Id Barang" rel="select2" name="tahun">
 									<option value="2017">2017</option>
+									<option value="2018">2018</option>
+									<option value="2019">2019</option>
+
 								</select>
 							</div>
 						</div>
@@ -134,7 +140,7 @@
 	</div>
 </div>
 @endla_access
-
+	{{--funsinya untuk mengakhiri syintak--}}
 @endsection
 
 @push('styles')
