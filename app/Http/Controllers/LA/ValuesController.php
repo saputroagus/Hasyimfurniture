@@ -57,31 +57,35 @@ class ValuesController extends Controller
         }
 	}
 
+	public function ramal(Request $request){
+	    if ($request->bulan == 1){
+            $value = Value::where('id_barang', '=', $request->barang)->where('bulan', '=', ($request->bulan + 11))->where('tahun', '=', ($request->tahun -1))->first();
+        } else {
+            $value = Value::where('id_barang', '=', $request->barang)->where('bulan', '=', ($request->bulan - 1))->where('tahun', '=', ($request->tahun))->first();
+        }
+	    if ($value !=null){
+            if ($value->total_terjual == 0){
+                return redirect()->back()->withErrors("Total terjual sebelumnya belum ada");
+            }
+        } else{
+            return redirect()->back()->withErrors("Tidak bisa melakukan peramalan");
+        }
+        $bulan_depan = $value->hasil_ramalan + (0.1 * ($value->total_terjual - $value->hasil_ramalan));
+//    dd($bulan_depan);
+    Value::create([
+        'id_barang' => $request->barang,
+        'hasil_ramalan' => $bulan_depan,
+        'tahun' => $request->tahun,
+        'bulan' => $request->bulan,
+    ]);
+    return redirect()->back();
+	}
+
 	/**
 	 * Show the form for creating a new value.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function ramal(Request $request){//ramalan
-	    $value = Value::where('id_barang','=',$request->barang)->where('bulan','=',($request->bulan - 1))->first();
-//	    dd($value);
-	    if ($value != null){
-            if($value->total_terjual == 0){
-                return redirect()->back()->withErrors("Total terjual sebelumnya balum ada");
-            }
-        } else{
-            return redirect()->back()->withErrors("Tidak bisa melakukan peramalan");
-        }
-	    $bulan_depan = $value->hasil_ramalan + (0.1 * ($value->total_terjual - $value->hasil_ramalan));
-//        dd($bulan_depan);
-	    Value::create([
-	        'id_barang' => $request->barang,
-            'hasil_ramalan' => $bulan_depan,
-            'tahun' => $request->tahun,
-            'bulan' => $request->bulan,
-        ]);
-        return redirect()->back();
-    }
 	public function create()
 	{
 		//
@@ -168,7 +172,7 @@ class ValuesController extends Controller
 			} else {
 				return view('errors.404', [
 					'record_id' => $id,
-					'record_name' => ucfirst("value"),
+					'record_name' => ucfirst(" value"),
 				]);
 			}
 		} else {
@@ -259,7 +263,7 @@ class ValuesController extends Controller
 					$output .= Form::open(['route' => [config('laraadmin.adminRoute') . '.values.destroy', $data->data[$i][0]], 'method' => 'delete', 'style'=>'display:inline']);
 					$output .= ' <button class="btn btn-danger btn-xs" type="submit"><i class="fa fa-times"></i></button>';
 					$output .= Form::close();
-				}
+			 	}
 				$data->data[$i][] = (string)$output;
 			}
 		}
