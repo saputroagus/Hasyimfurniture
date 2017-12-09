@@ -84,8 +84,10 @@ class OrdersController extends Controller
 			if ($validator->fails()) {
 				return redirect()->back()->withErrors($validator)->withInput();
 			}
-			
-			$insert_id = Module::insert("Orders", $request);
+			$data = $request->all();
+            $data['kode_order'] = uniqid();
+            Order::create($data);
+			//$insert_id = Module::insert("Orders", $request);
 			
 			return redirect()->route(config('laraadmin.adminRoute') . '.orders.index');
 			
