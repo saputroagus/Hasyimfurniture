@@ -59,7 +59,7 @@ class ValuesController extends Controller
 
 	public function ramal(Request $request){
 	    if ($request->bulan == 1){
-            $value = Value::where('id_barang', '=', $request->barang)->where('bulan', '=', ($request->bulan + 11))->where('tahun', '=', ($request->tahun -1))->first();
+            $value = Value::where('id_barang', '=', $request->barang)->where('bulan', '=', ($request->bulan + 11))->where('tahun', '=', ($request->tahun))->first();
         } else {
             $value = Value::where('id_barang', '=', $request->barang)->where('bulan', '=', ($request->bulan - 1))->where('tahun', '=', ($request->tahun))->first();
         }
