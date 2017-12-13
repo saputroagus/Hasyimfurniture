@@ -7,6 +7,8 @@
 namespace App\Http\Controllers\LA;
 
 use App\Http\Controllers\Controller;
+use App\Models\Store;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Auth;
@@ -73,6 +75,7 @@ class OrdersController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
+//	berfungsi untuk inputan
 	public function store(Request $request)
 	{
 		if(Module::hasAccess("Orders", "create")) {
@@ -84,9 +87,17 @@ class OrdersController extends Controller
 			if ($validator->fails()) {
 				return redirect()->back()->withErrors($validator)->withInput();
 			}
-			$data = $request->all();
+			$tanggal = explode("/",$request->tgl_order);
+            $tgl = Carbon::createFromDate($tanggal[2],$tanggal[1],$tanggal[0])->toDateString();
+			$data = $request->except('tgl_order');
+            $data['tgl_order'] = $tgl;
             $data['kode_order'] = uniqid();
-            Order::create($data);
+            if (Auth::user()->id == 1){
+                Order::create($data);
+            } else {
+                $data['id_toko'] = Store::where('id_user','=',Auth::user()->id)->first()->id;
+                Order::create($data);
+            }
 			//$insert_id = Module::insert("Orders", $request);
 			
 			return redirect()->route(config('laraadmin.adminRoute') . '.orders.index');
@@ -102,6 +113,7 @@ class OrdersController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
+//	untuk menampilkan yang di mata
 	public function show($id)
 	{
 		if(Module::hasAccess("Orders", "view")) {
@@ -192,6 +204,7 @@ class OrdersController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
+//	hapus
 	public function destroy($id)
 	{
 		if(Module::hasAccess("Orders", "delete")) {
@@ -209,10 +222,17 @@ class OrdersController extends Controller
 	 *
 	 * @return
 	 */
+//	menampilkan tabel
 	public function dtajax()
 	{
-		$values = DB::table('orders')->select($this->listing_cols)->whereNull('deleted_at');
-		$out = Datatables::of($values)->make();
+//	    filter sesuai id toko
+        if (Auth::user()->id == 1) {
+            $values = DB::table('orders')->select($this->listing_cols)->whereNull('deleted_at');
+        } else{
+            $id_toko = Store::where('id_user','=',Auth::user()->id)->first()->id;
+            $values = DB::table('orders')->select($this->listing_cols)->whereNull('deleted_at')->where('id_toko','=',$id_toko);
+        }
+        $out = Datatables::of($values)->make();
 		$data = $out->getData();
 
 		$fields_popup = ModuleFields::getModuleFields('Orders');
@@ -248,4 +268,5 @@ class OrdersController extends Controller
 		$out->setData($data);
 		return $out;
 	}
+
 }
