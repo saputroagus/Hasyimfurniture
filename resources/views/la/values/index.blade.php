@@ -151,6 +151,7 @@
 <script src="{{ asset('la-assets/plugins/datatables/datatables.min.js') }}"></script>
 <script>
 $(function () {
+//    menampilkan tabel
 	$("#example1").DataTable({
 		processing: true,
         serverSide: true,
