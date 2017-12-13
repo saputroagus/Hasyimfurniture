@@ -56,7 +56,7 @@
 		<table id="example1" class="table table-bordered">
 		<thead>
 		<tr class="success">
-			<th>Nama Barang</th>
+			<th>ID Barang</th>
 			<th>Total</th>
 		</tr>
 		</thead>
